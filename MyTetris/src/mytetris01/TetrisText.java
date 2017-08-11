@@ -4,9 +4,9 @@ import javax.swing.JTextArea;
 
 public class TetrisText extends JTextArea{
 
-	private static final String space = " ";
-	private static final String cell = "Б°";
-	private static final String active = "Б†";
+	private static final String space = "БQ";
+	private static final String cell = "ЯT";
+	private static final String active = "Мы";
 
 	int[][] field = new int[23][12];
 
