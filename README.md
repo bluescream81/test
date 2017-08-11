@@ -1,2 +1,2 @@
 # test
-test og github
+test of Github
