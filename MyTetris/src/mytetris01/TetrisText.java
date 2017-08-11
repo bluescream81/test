@@ -4,7 +4,7 @@ import javax.swing.JTextArea;
 
 public class TetrisText extends JTextArea{
 
-	private static final String space = "o";
+	private static final String space = " ";
 	private static final String cell = "Å°";
 	private static final String active = "Å†";
 
