@@ -16,8 +16,8 @@ public class MyTetrisMain extends JFrame{
 //        setBounds(100, 100, 600, 650);
 
 //        // サイズ変更禁止
-//        setResizable(false)
-        ;
+//        setResizable(false);
+        
         MainPanel panel = new MainPanel();
         Container contentPane = getContentPane();
         contentPane.add(panel, BorderLayout.CENTER);

@@ -4,9 +4,9 @@ import javax.swing.JTextArea;
 
 public class TetrisText extends JTextArea{
 
-	private static final String space = "＿";
-	private static final String cell = "鬱";
-	private static final String active = "口";
+	private static final String SPACE = "＿";
+	private static final String CELL = "鬱";
+	private static final String ACTIVE = "口";
 
 	int[][] field = new int[23][12];
 
@@ -20,7 +20,7 @@ public class TetrisText extends JTextArea{
 	 */
 	public TetrisText(){
 		super();
-		this.append(cell);
+		this.append(CELL);
 		for(int i=0;i<23;i++){
 			for(int j=0;j<12;j++){
 				field[i][j] = 1;
@@ -31,8 +31,9 @@ public class TetrisText extends JTextArea{
 				field[i][j] = 0;
 			}
 		}
+		//ToDo 最初のブロックを生成。暫定的にL型ブロックのみ
+		field[3][6] = 2;
 		field[2][6] = 2;
-		field[1][6] = 2;
 		field[2][7] = 2;
 		field[2][8] = 2;
 		this.setText(makeField());
@@ -60,18 +61,43 @@ public class TetrisText extends JTextArea{
 			}
 		}
 	}
+	
+	private void deleteLine(){
+		for(int i=0;i<22;i++){
+			int cnt=0;
+			for(int j=0;j<12;j++){
+				if(field[i][j] == 1){
+					cnt++;
+				}
+			}
+			if(cnt==12){
+				for(int j=1;j<11;j++){
+					field[i][j] = 0;
+				}
+	    		this.setText(makeField());
+	    		//ToDo 一秒止める
+	    		//詰める
+				for(int k=i;k>0;k--){
+					for(int j=0;j<12;j++){
+						field[k][j] = field[k-1][j];
+					}
+				}
+			}
+		}
+	}
 
 	private void addCounter(int i, int j) {
 		x[t]=i;
 		y[t]=j;
 		t++;
 	}
-
-    public void moveLeft() {
+    
+    // 左ならleftRight=-1, 下ならupDown=1
+    public void moveActiveBlock(int leftRight, int upDown){
     	initCounter();
     	for(int i=0;i<23;i++){
 			for(int j=0;j<12;j++){
-				if(field[i][j] == 2 && field[i][j-1] !=1){
+				if(i+upDown>=0 && j+leftRight>=0 && field[i][j] == 2 && field[i+upDown][j+leftRight] !=1){
 					addCounter(i,j);
 				}
 			}
@@ -79,67 +105,17 @@ public class TetrisText extends JTextArea{
     	if(t==4){
     		clearActiveBlock();
     		for(int i=0;i<4;i++){
-        		field[x[i]][y[i]-1] = 2;
+        		field[x[i] + upDown][y[i]+leftRight] = 2;
     		}
     		this.setText(makeField());
-    	}
-    }
-
-    public void moveUp() {
-    	initCounter();
-    	for(int i=0;i<23;i++){
-			for(int j=0;j<12;j++){
-				if(field[i][j] == 2 && field[i-1][j] !=1){
-					addCounter(i,j);
-				}
-			}
-		}
-    	if(t==4){
-    		clearActiveBlock();
-    		for(int i=0;i<4;i++){
-        		field[x[i]-1][y[i]] = 2;
-    		}
-    		this.setText(makeField());
-    	}
-    }
-
-    public void moveRight() {
-    	initCounter();
-    	for(int i=0;i<23;i++){
-			for(int j=0;j<12;j++){
-				if(field[i][j] == 2 && field[i][j+1] !=1){
-					addCounter(i,j);
-				}
-			}
-		}
-    	if(t==4){
-    		clearActiveBlock();
-    		for(int i=0;i<4;i++){
-        		field[x[i]][y[i]+1] = 2;
-    		}
-    		this.setText(makeField());
-    	}
-    }
-
-    public void moveDown() {
-    	initCounter();
-    	for(int i=0;i<23;i++){
-			for(int j=0;j<12;j++){
-				if(field[i][j] == 2 && field[i+1][j] !=1){
-					addCounter(i,j);
-				}
-			}
-		}
-    	if(t==4){
-    		clearActiveBlock();
-    		for(int i=0;i<4;i++){
-        		field[x[i]+1][y[i]] = 2;
-    		}
-    		this.setText(makeField());
-    	}else{
+    	}else if(upDown == 1){
+    		//下に下がれない場合はブロック固定
     		fixActiveBlock();
+    		//ToDo ブロックが揃った行は上の行を詰める
+    		deleteLine();
+    		//ToDo 次のブロックを生成。暫定的にL型ブロックのみ
+    		field[3][6] = 2;
     		field[2][6] = 2;
-    		field[1][6] = 2;
     		field[2][7] = 2;
     		field[2][8] = 2;
     		this.setText(makeField());
@@ -153,11 +129,11 @@ public class TetrisText extends JTextArea{
 		for(int i=0;i<23;i++){
 			for(int j=0;j<12;j++){
 				if(field[i][j] == 2){
-					result = result + active;
+					result = result + ACTIVE;
 				}else if(field[i][j] == 1){
-					result = result + cell;
+					result = result + CELL;
 				}else{
-					result = result + space;
+					result = result + SPACE;
 				}
 			}
 			result = result + "\n";

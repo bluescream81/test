@@ -13,12 +13,13 @@ import javax.swing.JTextArea;
  */
 
 public class MainPanel extends JPanel implements KeyListener {
-    private static final int WIDTH = 480;
+    private static final int WIDTH = 240;
     private static final int HEIGHT = 480;
 
-    // テトリス画面エリア
-    private JTextArea dialogueArea;
-    // テトリス画面エリアに表示されるテキスト
+    // テトリス画面エリアになるテキストエリア
+    private JTextArea tetrisTextArea = new JTextArea();
+    
+    // テトリス画面エリアに表示されるテキスト(TetrisTextはJTextAreaの拡張クラス)
     private TetrisText tetrisText = new TetrisText();
 
 	private String tetris;
@@ -35,21 +36,20 @@ public class MainPanel extends JPanel implements KeyListener {
         setLayout(new BorderLayout());
 
         // メッセージ履歴表示エリア
-        dialogueArea = new JTextArea();
-        dialogueArea.setEditable(false);
-        dialogueArea.setLineWrap(true);
+        tetrisTextArea.setEditable(false);
+        tetrisTextArea.setLineWrap(true);
 
         // パネルに追加
-        JScrollPane scrollPane = new JScrollPane(dialogueArea);
+        JScrollPane scrollPane = new JScrollPane(tetrisTextArea);
         scrollPane.setAutoscrolls(true);
         add(scrollPane, BorderLayout.CENTER);
 
-
+        //パネルを更新
     	tetris = tetrisText.getText();
-    	dialogueArea.setText("");
-        dialogueArea.append(tetris + "\n");
+    	tetrisTextArea.setText("");
+        tetrisTextArea.append(tetris + "\n");
 
-        dialogueArea.addKeyListener(this);
+        tetrisTextArea.addKeyListener(this);
     }
 
 
@@ -58,23 +58,29 @@ public class MainPanel extends JPanel implements KeyListener {
 		// TODO 自動生成されたメソッド・スタブ
 
 	}
+	
+	private final int KEY_LEFT = 37;
+	private final int KEY_UP = 38;
+	private final int KEY_RIGHT = 39;
+	private final int KEY_DOWN = 40;
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO 自動生成されたメソッド・スタブ
-		if(e.getKeyCode()==37){
-			tetrisText.moveLeft();
-		}else if(e.getKeyCode()==38){
-			tetrisText.moveUp();
-		}else if(e.getKeyCode()==39){
-			tetrisText.moveRight();
-		}else if(e.getKeyCode()==40){
-			tetrisText.moveDown();
+		if(e.getKeyCode()==KEY_LEFT){
+			tetrisText.moveActiveBlock(-1, 0);
+		}else if(e.getKeyCode()==KEY_UP){
+			tetrisText.moveActiveBlock(0, -1);
+		}else if(e.getKeyCode()==KEY_RIGHT){
+			tetrisText.moveActiveBlock(1,0);
+		}else if(e.getKeyCode()==KEY_DOWN){
+			tetrisText.moveActiveBlock(0,1);
 		}
 
+        //パネルを更新
     	tetris = tetrisText.getText();
-    	dialogueArea.setText("");
-        dialogueArea.append(tetris + "\n");
+    	tetrisTextArea.setText("");
+        tetrisTextArea.append(tetris + "\n");
 	}
 
 	@Override
